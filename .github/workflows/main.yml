@@ -1,0 +1,27 @@
+name: Update index.php and Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  update-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Update index.php
+      run: echo "<?php echo 'cicdtest'; ?>" > index.php
+
+    - name: Commit and Push
+      run: |
+        git config --global user.name 'Your Name'
+        git config --global user.email 'your-email@example.com'
+        git commit -am "Update index.php content"
+        git push
+
+    # 在這裡添加您的部署步驟
+    # - name: Deploy to Production Server
+    #   run: <您的部署腳本>
