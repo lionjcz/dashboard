@@ -1,0 +1,16 @@
+const fs = require('fs');
+const path = require('path');
+
+const directoryPath = path.join(__dirname, 'your-directory'); // 替換 'your-directory' 為您的圖片資料夾名稱
+
+fs.readdir(directoryPath, function (err, files) {
+    if (err) {
+        return console.log('Unable to scan directory: ' + err);
+    } 
+
+    files.forEach(function (file) {
+        if (file.endsWith('.jpg') || file.endsWith('.png') || file.endsWith('.jpeg')) {
+            console.log(file);
+        }
+    });
+});

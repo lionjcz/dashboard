@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="ZH-TW">
+
+<head>
+  <meta charset="utf-8">
+
+  <link rel="shortcut icon" href="package/WebSite/shortcut_icon.png" />
+
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="format-detection" content="telephone=no">
+  <meta http-equiv="x-rim-auto-match" content="none">
+  <meta name="generator" content="VScode">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <script src="js/Service.js"></script>
+
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.min.js"
+    integrity="sha384-j0CNLUeiqtyaRmlzUHCPZ+Gy5fQu0dQ6eZ/xAww941Ai1SxSY+0EQqNXNE6DZiVc"
+    crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+
+
+
+
+  <!-- ajax -->
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <!--  -->
+  <script src="https://ajax.googleapis.com/ajax/libs/prototype/1.7.3.0/prototype.js"></script>
+
+
+  <script
+  src="https://code.jquery.com/jquery-3.6.0.min.js"
+  integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+  crossorigin="anonymous"></script>
+  <script>
+
+    // $(document).ready(function () {
+    // });
+  </script>
+
+
+  <script>
+    window.history.forward()
+
+  </script>
+
+  <title id="M_title">線上報修-萬士益冷氣
+  </title>
+  <style>
+    @media screen and (max-width: 768px) {
+      body {
+        /* background-color:lightblue; */
+      }
+
+      .LogoInNav {
+        display: none;
+      }
+    }
+  </style>
+
+</head>
+
+
+
+
+
+
+<body id="MainLayoutBody">
+
+
+  <div class="container-fluid ">
+    
+
+
+
+    <script>
+
+      function isExist(data) {
+        var Response=1200;
+        $.ajax({
+      type: 'GET',
+      url: 'https://api.boardgameatlas.com/api/search?order_by=rank&ascending=false&pretty=true&client_id=JLBr5npPhV',
+      dataType: 'json',
+      async:false,
+      success:function(data3){
+        console.log(data3);
+        Response = data3['count']
+      }
+    });
+
+        return Response;
+
+      }
+      /** 資料蒐集 */
+      function DataBinding(action, content) {
+        let formData = new FormData();
+        formData.append('action', action);
+        formData.append('content', content);
+        formData.append("_token", "c0doGeOLgFO3zNJNhmggFcHgaMianHXPlL5zWn6Y");
+        return formData;
+      }
+      function FindOutAllRegionByDistrict(data) {
+        if ($("#" + data.id + " option:selected").text() !== "請選擇") {
+          // 
+          const Request = {
+            NewDistrict: data.value
+          };
+          const Method = 'post';
+          const Url = ApiLink + '/FindOutAllRegionByDistrict';
+          const Async = false;
+          const Response = ajax(Method, Url, Async, Request);
+          // console.log(Response);
+          if (Response['FinalResult']) {
+            if (typeof Response['Data'] === 'undefined') {
+              console.log('no any data');
+              alert('查無資料');
+            } else {
+              console.log('has data');
+              // alert(Response['MSG']);
+              // ProcessData2(Response['Data'])
+              $("#uReg").empty();
+              Response['Data'].forEach(
+                item => $("#uReg").append('<option>' + item + '</option>')
+              )
+
+            }
+          } else {
+            alert(Response['MSG']);
+          }
+        }
+      }
+      function ErrorMSG(res, id, Msg) {
+        if (res) {
+          $('#' + id).css('border', '2px solid green')
+          $('#' + id + 'Error_Msg').html('').css('color', 'green')
+        } else {
+          $('#' + id).css("border", "2px solid red")
+          $('#' + id + 'Error_Msg').html(Msg).css("color", "red")
+        }
+      }
+      function Action(input) {
+        switch (input.id) {
+          case "uAcc":
+            // if (!CheckIsNull(input.value)) {
+              $isExist = isExist(input)
+            //   console.log($isExist)
+            //   ErrorMSG($isExist);
+
+            // } else {
+              ErrorMSG(false, input.id, $isExist);
+            // }
+            break;
+          
+          case "1234":
+            break;
+            
+
+        }
+
+      }
+
+      function Account(value) {
+        return CheckIsNull(value);
+      }
+
+      function CheckIsNull(value) {
+        if (value === "" || value === null || value === undefined || value === "請選擇") {
+          return true;
+        } else {
+          return false;
+        }
+      }
+
+      function CheckPasswordCount(value) {
+        if (value.length > 5 && value.length < 13) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+
+      function u2Pas(pa2, pa) {
+        if (pa2 === pa && pa2 !== "" && pa !== "") {
+          return true;
+        } else {
+          return false;
+        }
+      }
+
+      /** (必填)驗證函式-11 檢查驗證碼 */
+      function CheckCode(action) {
+        var bool = false;
+        // console.log(action);
+
+
+
+        const Request = null;
+        const Method = 'post';
+        const Url = UrlLink + '/Vertification';
+        const Async = false;
+        const Response = ajax(Method, Url, Async, Request, "c0doGeOLgFO3zNJNhmggFcHgaMianHXPlL5zWn6Y");
+        // console.log(Response);
+        if (Response['FinalResult']) {
+          if (typeof Response['Data'] === 'undefined') {
+            // console.log('no any data');
+            alert('查無資料');
+          } else {
+            console.log('has data');
+
+            if (Response['Data'] === action) {
+              bool = true;
+            } else {
+              bool = false;
+            }
+          }
+        } else {
+          alert(Response['MSG']);
+        }
+        return bool;
+      }
+
+
+      /** Notifiy Data Error By Alert*/
+      function NotifiyUserAboutData() {
+
+        var list = [];
+
+        $('.Necessary').each(function (index) {
+          switch (this.id) {
+            case 'uAcc':
+              !CheckIsNull($('#uAcc').val()) ? 0 : list.push(this.name + " 資料錯誤");
+              break;
+            case 'uPas':
+              CheckPasswordCount($('#uPas').val()) ? 0 : list.push(this.name + " 資料錯誤");
+              break;
+            case 'u2Pas':
+              u2Pas($('#u2Pas').val(), $('#uPas').val()) ? 0 : list.push(this.name + " 資料錯誤");
+              break;
+            case 'uQue':
+              !CheckIsNull($('#uQue').val()) ? 0 : list.push(this.name + " 資料錯誤");
+              break;
+            case 'uAns':
+              !CheckIsNull($('#uAns').val()) ? 0 : list.push(this.name + " 資料錯誤");
+              break;
+            case 'uNam':
+              !CheckIsNull($('#uNam').val()) ? 0 : list.push(this.name + " 資料錯誤");
+              break;
+            case 'uDis':
+              !CheckIsNull($('#uDis').val()) ? 0 : list.push(this.name + " 資料錯誤");
+              break;
+            case 'uReg':
+              !CheckIsNull($('#uReg').val()) ? 0 : list.push(this.name + " 資料錯誤");
+              break;
+            case 'uAdd':
+              !CheckIsNull($('#uAdd').val()) ? 0 : list.push(this.name + " 資料錯誤");
+              break;
+            case 'uMod':
+              !CheckIsNull($('#uMod').val()) ? 0 : list.push(this.name + " 資料錯誤");
+              break;
+            case 'uDes':
+              !CheckIsNull($('#uDes').val()) ? 0 : list.push(this.name + " 資料錯誤");
+              break;
+            case 'uPol':
+              $('#uPol').prop('checked') ? 0 : list.push(this.name + " 尚未勾選");
+              break;
+            case 'uVer':
+              CheckCode($('#uVer').val()) ? 0 : list.push(this.name + " 驗證失敗");
+              break;
+
+
+          }
+        });
+
+        var i, text = "";
+        for (i = 0; i < list.length; i++) {
+          text += list[i] + "\n";
+        }
+        if (text != "") {
+          alert(text);
+        }
+        return list;
+      }
+      
+
+      /** 送出事件 */
+      function sub() {
+
+        if (NotifiyUserAboutData().length < 1) {
+          var unNecessary = []
+
+          $('.unNecessary').each(function (index) {
+
+            var anObjectName = this.name;
+            this[anObjectName] = this.value
+            var newD = {
+              [anObjectName]: this.value
+            }
+
+            // anObjectName.push(this.value)
+            unNecessary.push(newD)
+
+          });
+
+          var Necessary = []
+
+          $('.Necessary').each(function (index) {
+
+            var anObjectName = this.name;
+            this[anObjectName] = this.value
+            var newD = {
+              [anObjectName]: this.value
+            }
+
+            // anObjectName.push(this.value)
+            Necessary.push(newD)
+
+          });
+          SignUp(Necessary, unNecessary);
+
+        }
+      }
+
+      /** 註冊 確認所有必填欄位是否已輸入，如果皆已輸入，再判斷號碼是否重複，確定沒有重複後呼叫SignUp進行資料庫新增動作 */
+      function SignUp(Necessary, unNecessary) {
+
+
+        // 
+
+        const Request = {
+          Necessary: Necessary,
+          unNecessary: unNecessary
+        };
+        // console.log(Request)
+        const Method = 'post';
+        const Url = ApiLink + '/register';
+        const Async = false;
+        const Response = ajax(Method, Url, Async, Request);
+        // console.log(Response);
+        if (Response['FinalResult']) {
+          alert(Response['MSG']);
+          // document.location.href = UrlLink+"/thank"
+          document.location.href = UrlLink + "/Official"
+
+          if (typeof Response['Data'] === 'undefined') {
+            console.log('no any data');
+            // alert('查無資料');
+          } else {
+            console.log('has data');
+            alert(Response['MSG']);
+            ProcessData2(Response['Data'])
+          }
+        } else {
+          alert(Response['MSG']);
+        }
+
+
+
+
+      }
+
+    </script>
+
+    <style>
+      @media screen and (max-width: 768px) {
+
+
+        .container {
+          /* display:none; */
+
+        }
+      }
+
+
+
+      .SignUpLayout {
+        padding: 2em;
+        background-color: #bbe0ef;
+        border-radius: 2em;
+        margin-top: 1em;
+      }
+
+
+      .Part1 {
+        background-color: rgba(255, 255, 0, 0.568);
+        text-align: center;
+        border-radius: 1em;
+
+        margin-bottom: 1em;
+
+      }
+
+      .Part1 .subTitle {
+        border-top-left-radius: 1em;
+        border-top-right-radius: 1em;
+        background-color: #e7e747;
+        padding-top: 0.5em;
+        font-size: 20px;
+        padding-bottom: 0.5em;
+
+      }
+
+      .Part1 .inputRow {
+        background-color: #f1f3f6;
+        padding: 0.5em;
+        border-bottom: solid;
+        border-width: 1px;
+      }
+
+
+
+
+      .Part1 .inputRow:last-child {
+        border-bottom-left-radius: 1em;
+        border-bottom-right-radius: 1em;
+        padding-bottom: 0.5em;
+        border-bottom: solid;
+        border-width: 0px;
+
+      }
+
+      .input {
+        background-color: #f1f3f6;
+
+      }
+
+      .Necessary {
+        background-color: rgba(255, 192, 203, 0.411);
+
+      }
+    </style>
+
+    <div class="container SignUpLayout">
+      <form method="post" action="" name="myForm">
+        <input type="hidden" name="_token" value="c0doGeOLgFO3zNJNhmggFcHgaMianHXPlL5zWn6Y">
+        <div class="row">
+
+          <div class=" col-sm-12">
+            <div class="row Part1">
+              <div class=" col-sm-12">
+
+                <div class="row ">
+                  <div class="col-sm-12 subTitle">
+                    <div class="col-sm-12">收到您的報修資料後，服務單位會主動與您聯繫。</div>
+                    <div class="col-sm-12">由於報修採預約制，維修單位將依申請順序安排維修，若報修件數較多</div>
+                    <div class="col-sm-12">報修時間預計安排在申請日期後約５～7個工作天，實際維修時間將以工程師與您聯繫為主，造成您的不便敬請見諒。</div>
+                  </div>
+                </div>
+                <div class="row inputRow">
+                  <div class="col-sm-6 inputDescription">
+                    <div class="col-sm-12">
+                      連 絡 電 話 (必填)
+                    </div>
+                    <div class="col-sm-12">
+                      <span style="color:red">
+                        ※以此登入會員；市話請加區碼，Ex:0229015588
+                      </span>
+                    </div>
+
+                  </div>
+                  <div class="col-sm-6 input">
+                    <input class="Necessary form-control" type="text" id="uAcc" name="電話"
+                      onkeyup="value=value.replace(/[^\d]/g,'')" placeholder="請輸入連絡電話" onblur="Action(this)">
+                    <div id="uAccError_Msg"></div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+           
+
+         
+          </div>
+
+        </div>
+
+
+
+
+      </form>
+    </div>
+
+
+  </div>
+
+  </div>
+
+
+
+  </div>
+
+
+</body>
+
+</html>
